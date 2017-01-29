@@ -6,7 +6,7 @@ autoload -U colors && colors
 dockerHost=$DOCKERPROD
 hipchat_token=$HIPCHAT_API_TOKEN
 meetspace_token=$MEETSPACE_API_TOKEN
-ms_teamname=$MEETSPACEBOT_TEAM
+ms_api_host=$MEETSPACE_API_HOST
 ###
 
 echo "$fg[blue]"
@@ -62,10 +62,16 @@ case "$1" in
       ssh $dockerHost "sudo docker ps"
     fi
   
+    echo "$fg[yellow]### Starting Demo MS API ####" 
+    echo "$fg[blue]"
+    ssh $dockerHost "sudo docker pull davyj0nes/meetspacedemoapi && \
+      sudo docker run --restart=unless-stopped -p 8080:8080 -d --name demo-api davyj0nes/meetspacedemoapi"
+    echo "### Demo MS API Running ###"
+
     echo "$fg[yellow]### Starting Container ####" 
     echo "$fg[blue]"
     ssh $dockerHost "sudo docker pull davyj0nes/meetspacebot && \
-      sudo docker run --restart=unless-stopped -p 80:8081 -d --name msb-1 -e HIPCHAT_API_TOKEN="$hipchat_token" -e MEETSPACE_API_TOKEN="$meetspace_token" -e MEETSPACEBOT_TEAM="$ms_teamname" davyj0nes/meetspacebot"
+      sudo docker run --restart=unless-stopped -p 80:8081 -d --name msb-1 -e HIPCHAT_API_TOKEN="$hipchat_token" -e MEETSPACE_API_TOKEN="$meetspace_token" -e MEETSPACE_API_HOST="$ms_api_host" davyj0nes/meetspacebot"
     echo "## Container Running"
     ssh $dockerHost "sudo docker ps -a"
     echo "$fg[none]"
