@@ -1,7 +1,0 @@
-FROM scratch
-MAINTAINER DavyJ0nes <davy.jones@me.com>
-ENV UPDATED_ON: 28-01-2017
-
-ADD releases/meetspaceBot /
-CMD ["/meetspaceBot"]
-
