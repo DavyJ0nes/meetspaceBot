@@ -2,63 +2,45 @@ package hipchatAPI
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
+	"io/ioutil"
 	"os"
+	"strings"
 
 	"github.com/tbruyelle/hipchat-go/hipchat"
 )
 
-// example POST message
-// {
-// "event": "room_message",
-// "item": {
-//   "message": {
-//     "date": "2017-01-28T18:56:22.407746+00:00",
-//     "from": {
-//       "id": 3709716,
-//       "links": {
-//         "self": "https://api.hipchat.com/v2/user/3709716"
-//       },
-//       "mention_name": "davy",
-//       "name": "Davy Jones",
-//       "version": "T6JP69OQ"
-//     },
-//     "id": "d6ebec9f-1fa5-4e65-8f2b-54745150b718",
-//     "mentions": [],
-//     "message": "/meetspace",
-//     "type": "message"
-//   },
-//   "room": {
-//     "id": 3143303,
-//     "is_archived": false,
-//     "links": {
-//       "members": "https://api.hipchat.com/v2/room/3143303/member",
-//       "participants": "https://api.hipchat.com/v2/room/3143303/participant",
-//       "self": "https://api.hipchat.com/v2/room/3143303",
-//       "webhooks": "https://api.hipchat.com/v2/room/3143303/webhook"
-//     },
-//     "name": "hw",
-//     "privacy": "private",
-//     "version": "RLICVYSR"
-//   }
-// },
-// "oauth_client_id": "1b9f9174-a01f-40d1-9e4b-415e405c5b5b",
-// "webhook_id": 16080298
-// }
-
 // HipchatPostData is a struct for the data that is sent
 //   When the slash command is triggered
-// Only need Room Name from the POST request
 type HipchatPostData struct {
 	Event string `json:"event"`
 	Item  item   `json:"item"`
 }
 
 type item struct {
-	Room room `json:"room"`
+	Message message `json:"message"`
+	Room    struct {
+		Name string `json:"name"`
+	} `json:"room"`
 }
 
-type room struct {
-	Name string `json:"name"`
+type message struct {
+	From    from   `json:"from"`
+	Message string `json:"message"`
+}
+
+type from struct {
+	MentionName string `json:"mention_name"`
+	Name        string `json:"name"`
+}
+
+type HipChatAPIError struct {
+	Error struct {
+		Code    int    `json:"code"`
+		Message string `json:"message"`
+		Type    string `json:"type"`
+	} `json:"error"`
 }
 
 // ParsedHipchatReq simply parses the POST Req JSON into something useful
@@ -72,13 +54,74 @@ func ParseHipchatReq(data []byte) (HipchatPostData, error) {
 }
 
 // HipchatNotification sends Room Notification Message
-func HipchatNotification() error {
-	hc_auth := os.Getenv("HIPCHAT_API_TOKEN")
-	c := hipchat.NewClient(hc_auth)
-	notifMsg := &hipchat.NotificationRequest{Message: "Testing"}
-	_, err := c.Room.Notification("hw", notifMsg)
-	if err != nil {
-		return err
+// The notification is chosen based on user input
+func HipchatNotification(hc HipchatPostData, test string) (string, error) {
+	var notifReq *hipchat.NotificationRequest
+	c := hipchat.NewClient(os.Getenv("HIPCHAT_API_TOKEN"))
+	commandMessage := hc.Item.Message.Message
+	roomName := hc.Item.Room.Name
+	msTeam := os.Getenv("MEETSPACEBOT_TEAM")
+
+	// Will add more commands in future
+	// To be changed to not be hard coded
+	switch commandMessage {
+	case "/meetspace core":
+		notifReq = statusMessage(roomName, msTeam, "core")
+	case "/meetspace dev":
+		notifReq = statusMessage(roomName, msTeam, "dev")
+	default:
+		notifReq = helpMessage(roomName)
 	}
-	return nil
+
+	// Unelegant way to test at the moment
+	// Is set by environment variable
+	if test == "true" {
+		return notifReq.Message, nil
+	}
+
+	// This does not get covered in tests
+	//  Need to find a way to mock this out
+	res, err := c.Room.Notification(roomName, notifReq)
+	// This is messy but error was returning with other implementations
+	if res.StatusCode != 200 {
+		if res.StatusCode != 204 {
+			resMessage := HipChatAPIError{}
+			resBody, _ := ioutil.ReadAll(res.Body)
+			json.Unmarshal(resBody, &resMessage)
+			return "", errors.New(fmt.Sprintf("%v - \n%s\n\n%s", res.StatusCode, resMessage.Error.Message, resMessage.Error.Type))
+		}
+	}
+	if err != nil {
+		return "", err
+	}
+
+	return "", errors.New("End of function, should not get here")
+}
+
+// statusMessage is called when router sees /meetspace status
+func statusMessage(room, team, slug string) *hipchat.NotificationRequest {
+	meetspaceURL := fmt.Sprintf("https://meetspaceapp.com/%s/%s", team, slug)
+
+	// This is here as reminder that I need to get sending Cards working
+	msgCard := &hipchat.Card{
+		Style: "link",
+		URL:   meetspaceURL,
+		Title: "Click here to join call",
+		Description: hipchat.CardDescription{
+			Format: "format",
+			Value:  "value",
+		},
+	}
+	msgBody := fmt.Sprintf(`%s <a href="%s">%s %s Team</a>`, msgCard.Title, msgCard.URL, strings.Title(team), strings.Title(slug))
+	return &hipchat.NotificationRequest{From: "Meetspace Bot", Message: msgBody, Color: "purple"}
+
+	// Need to fix request for sending Card to work. More work needed
+	// return &hipchat.NotificationRequest{Message: msgBody, Card: msgCard}
+}
+
+// helpMessage is called when any other command is given
+func helpMessage(room string) *hipchat.NotificationRequest {
+	msgBody := fmt.Sprintf("<p><strong>Usage:</strong><br><code>/meetspace core # start core team call</code><br><code>/meetspace dev  # start dev team call</code></p>")
+
+	return &hipchat.NotificationRequest{From: "Meetspace Bot", Message: msgBody, Color: "gray"}
 }
