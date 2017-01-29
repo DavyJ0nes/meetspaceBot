@@ -10,7 +10,9 @@
 # Overview
 This is a simple bot that links [Hipchat](https://www.hipchat.com/) with  [Meetspace](http://www.meetspaceapp.com) Video chat
 
-The deployment artifact is a GO binary that is run from a docker container. To help keep the container size to a minimum I'm using a static binary by [disabling cgo](https://golang.org/cmd/cgo/) and rebuilding all dependencies as well with cgo disabled. I would have used "FROM scratch" but needed environment variables. [More Infomation](https://blog.codeship.com/building-minimal-docker-containers-for-go-applications/)
+This is my first attempt at writing a non-trivial GO program as well as using Docker for deployment.
+
+The deployment artifact is a GO binary that is run from a docker container. To help keep the container size to a minimum I'm using a statically linked binary by [disabling cgo](https://golang.org/cmd/cgo/) and rebuilding all dependencies as well with cgo disabled. I would have used "FROM scratch" but needed environment variables. [More Infomation](https://blog.codeship.com/building-minimal-docker-containers-for-go-applications/)
 
 If you want to run it outside of Docker, then within [Releases](./releases) there is the latest stable go binary that is compiled to run on Linux.
 
@@ -48,8 +50,10 @@ The Bot requires the following environment variables to be set:
 # Roadmap
 This package was made for personal use but would like to add the following in the future. 
 Any contributions are welcome - Just open a PR.
+- Use docker compose/swarm or Kubernetes for deployment rather than bash script
+- Post message's as Cards
 - Slack Support
-- Deeper integration with HipChat
+- Deeper integration with HipChat and Slack
 
 # License
 This package is distributed under the BSD-style license found in the [LICENSE](./LICENSE) file.

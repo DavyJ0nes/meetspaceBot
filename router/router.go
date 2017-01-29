@@ -11,10 +11,12 @@ import (
 	"github.com/davyj0nes/meetspacebot/meetspaceAPI"
 )
 
+// requestLogger logs request information in standard way
 func requestLogger(req *http.Request) {
 	log.Printf("%s | %s || %s => %s || %s", req.Method, req.URL.Path, req.RemoteAddr, req.Host, req.Header.Get("User-Agent"))
 }
 
+// Router is main mux wrangler. Keeps main() clean
 func Router() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v0/hipchat", HipchatHandler)
@@ -23,6 +25,7 @@ func Router() http.Handler {
 	return mux
 }
 
+// HipchatHandler is the main function for dealing with Hipchat Requests
 func HipchatHandler(w http.ResponseWriter, req *http.Request) {
 	requestLogger(req)
 	hipchatReq, hcrErr := hipchatReq(req)
@@ -57,6 +60,7 @@ func HipchatHandler(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 }
 
+// hipchatReq returns formatted Data from Hipchat POST request
 func hipchatReq(req *http.Request) (hipchatAPI.HipchatPostData, error) {
 	var hcpd hipchatAPI.HipchatPostData
 	reqBody, err := ioutil.ReadAll(req.Body)
@@ -71,6 +75,7 @@ func hipchatReq(req *http.Request) (hipchatAPI.HipchatPostData, error) {
 	return parsed, nil
 }
 
+// MeetspaceData calls the meetspace API and returns formatted Data
 func MeetspaceData() (meetspaceAPI.MeetspaceData, error) {
 	apiUrl := os.Getenv("MEETSPACE_API_HOST")
 	apiEndpoint := "status"
