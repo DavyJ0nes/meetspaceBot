@@ -1,0 +1,13 @@
+mode: set
+github.com/davyj0nes/meetspaceBot/meetspaceAPI/meetspaceAPI.go:37.65,41.16 4 1
+github.com/davyj0nes/meetspaceBot/meetspaceAPI/meetspaceAPI.go:46.2,49.16 4 1
+github.com/davyj0nes/meetspaceBot/meetspaceAPI/meetspaceAPI.go:53.2,53.37 1 1
+github.com/davyj0nes/meetspaceBot/meetspaceAPI/meetspaceAPI.go:56.2,58.16 3 1
+github.com/davyj0nes/meetspaceBot/meetspaceAPI/meetspaceAPI.go:61.2,61.18 1 1
+github.com/davyj0nes/meetspaceBot/meetspaceAPI/meetspaceAPI.go:41.16,43.3 1 0
+github.com/davyj0nes/meetspaceBot/meetspaceAPI/meetspaceAPI.go:49.16,51.3 1 0
+github.com/davyj0nes/meetspaceBot/meetspaceAPI/meetspaceAPI.go:53.37,55.3 1 0
+github.com/davyj0nes/meetspaceBot/meetspaceAPI/meetspaceAPI.go:58.16,60.3 1 0
+github.com/davyj0nes/meetspaceBot/meetspaceAPI/meetspaceAPI.go:66.58,69.16 3 1
+github.com/davyj0nes/meetspaceBot/meetspaceAPI/meetspaceAPI.go:72.2,72.27 1 1
+github.com/davyj0nes/meetspaceBot/meetspaceAPI/meetspaceAPI.go:69.16,71.3 1 0

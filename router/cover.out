@@ -1,0 +1,10 @@
+mode: set
+github.com/davyj0nes/meetspaceBot/router/router.go:12.39,14.2 1 1
+github.com/davyj0nes/meetspaceBot/router/router.go:16.15,21.2 3 0
+github.com/davyj0nes/meetspaceBot/router/router.go:23.63,27.16 3 1
+github.com/davyj0nes/meetspaceBot/router/router.go:31.2,32.16 2 1
+github.com/davyj0nes/meetspaceBot/router/router.go:36.2,37.15 2 1
+github.com/davyj0nes/meetspaceBot/router/router.go:40.2,40.52 1 1
+github.com/davyj0nes/meetspaceBot/router/router.go:27.16,29.3 1 0
+github.com/davyj0nes/meetspaceBot/router/router.go:32.16,34.3 1 0
+github.com/davyj0nes/meetspaceBot/router/router.go:37.15,39.3 1 0

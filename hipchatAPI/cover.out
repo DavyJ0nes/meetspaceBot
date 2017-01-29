@@ -1,0 +1,18 @@
+mode: set
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:47.60,50.16 3 1
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:53.2,53.23 1 1
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:50.16,52.3 1 0
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:58.75,68.24 6 1
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:79.2,79.20 1 1
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:83.2,84.27 2 0
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:92.2,92.16 1 0
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:96.2,96.16 1 0
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:69.2,70.53 1 1
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:71.2,72.52 1 0
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:73.2,74.35 1 1
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:79.20,81.3 1 1
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:84.27,85.28 1 0
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:85.28,90.4 4 0
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:92.16,94.3 1 0
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:100.74,118.2 4 1
+github.com/davyj0nes/meetspaceBot/hipchatAPI/hipchatAPI.go:121.60,125.2 2 1
