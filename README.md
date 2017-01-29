@@ -32,10 +32,18 @@ Please follow this guide: https://blog.hipchat.com/2015/02/11/build-your-own-int
 - For the Slash command, it needs to be set as "/meetspace"
 - For the url, it needs to follow this schema: "<host>/api/v0/hipchat"
 
+## Run Demo Meetspace API Server
+To help with development while the Meetspace API is being added, there is a simple static version of the return data. To run if you can use the following:
+```
+sudo docker run --restart=unless-stopped -p 8080:8080 -d --name demo-api davyj0nes/meetspacedemoapi
+```
+
 # Use of Environment Variables
 The Bot requires the following environment variables to be set:
 - `HIPCHAT_API_TOKEN` - This is the Hipchat API token. You can generate one from [here](https://www.hipchat.com/account/api) 
 - `MEETSPACE_API_TOKEN` - This is the API token for meetspace.
+- `MEETSPACE_API_HOST` - host of the Meetspace API. When running Demo API, this will need to be changed.
+- `MEETSPACEBOT_TEST` - Set to "true" if you want to use local Demo API Container
 
 # Roadmap
 This package was made for personal use but would like to add the following in the future. 

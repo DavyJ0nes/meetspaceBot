@@ -14,24 +14,10 @@ var hcTestData = strings.NewReader(`{"event": "room_message", "item": {"message"
 // init is being used here to set required env's before test execution
 func init() {
 	os.Setenv("MEETSPACEBOT_TEST", "true")
+	os.Setenv("MEETSPACE_API_HOST", "http://docker:8080")
 }
 
-// func TestRouter(t *testing.T) {
-//   req, err := http.NewRequest("GET", "/api/v0/hipchat", nil)
-//   if err != nil {
-//     t.Fatal(err)
-//   }
-
-//   rr := httptest.NewRecorder()
-//   handler := http.HandlerFunc(HipchatHandler)
-
-//   handler.ServeHTTP(rr, req)
-//   if status := rr.Code; status != http.StatusOK {
-//     t.Errorf("handler returned wrong status code: got %v want %v",
-//       status, http.StatusOK)
-//   }
-// }
-
+// TestHipchatHandler tests the Hipchat command route
 func TestHipchatHandler(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(HipchatHandler))
 	defer ts.Close()
@@ -44,6 +30,18 @@ func TestHipchatHandler(t *testing.T) {
 	}
 
 	if res.StatusCode != 200 {
-		t.Errorf("Expected 200 | Got: %s", res.StatusCode)
+		t.Errorf("Expected 200 | Got: %v", res.StatusCode)
+	}
+}
+
+// TestMeetspaceData makes call to demo host running in Docker
+// Not the best implementation, is more of an acceptance test
+func TestMeetspaceData(t *testing.T) {
+	msd, err := MeetspaceData()
+	if err != nil {
+		t.Errorf("Error Getting MeetspaceData():, %s", err)
+	}
+	if msd.Name != "Forge" {
+		t.Errorf("Expected: 'Forge' | Got: '%s'", msd.Name)
 	}
 }

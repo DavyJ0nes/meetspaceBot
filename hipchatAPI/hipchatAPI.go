@@ -55,22 +55,14 @@ func ParseHipchatReq(data []byte) (HipchatPostData, error) {
 
 // HipchatNotification sends Room Notification Message
 // The notification is chosen based on user input
-func HipchatNotification(hc HipchatPostData, test string) (string, error) {
+func HipchatNotification(roomName, reqRoom, teamName, test string) (string, error) {
 	var notifReq *hipchat.NotificationRequest
 	c := hipchat.NewClient(os.Getenv("HIPCHAT_API_TOKEN"))
-	commandMessage := hc.Item.Message.Message
-	roomName := hc.Item.Room.Name
-	msTeam := os.Getenv("MEETSPACEBOT_TEAM")
 
-	// Will add more commands in future
-	// To be changed to not be hard coded
-	switch commandMessage {
-	case "/meetspace core":
-		notifReq = statusMessage(roomName, msTeam, "core")
-	case "/meetspace dev":
-		notifReq = statusMessage(roomName, msTeam, "dev")
-	default:
-		notifReq = helpMessage(roomName)
+	if roomName != "" {
+		notifReq = statusMessage(teamName, roomName)
+	} else {
+		notifReq = helpMessage()
 	}
 
 	// Unelegant way to test at the moment
@@ -81,26 +73,26 @@ func HipchatNotification(hc HipchatPostData, test string) (string, error) {
 
 	// This does not get covered in tests
 	//  Need to find a way to mock this out
-	res, err := c.Room.Notification(roomName, notifReq)
+	res, err := c.Room.Notification(reqRoom, notifReq)
 	// This is messy but error was returning with other implementations
 	if res.StatusCode != 200 {
 		if res.StatusCode != 204 {
 			resMessage := HipChatAPIError{}
 			resBody, _ := ioutil.ReadAll(res.Body)
 			json.Unmarshal(resBody, &resMessage)
-			return "", errors.New(fmt.Sprintf("%v - \n%s\n\n%s", res.StatusCode, resMessage.Error.Message, resMessage.Error.Type))
+			return "", errors.New(fmt.Sprintf(" %v - \n%s\n\n%s", res.StatusCode, resMessage.Error.Message, resMessage.Error.Type))
 		}
 	}
 	if err != nil {
 		return "", err
 	}
 
-	return "", errors.New("End of function, should not get here")
+	return "", nil
 }
 
 // statusMessage is called when router sees /meetspace status
-func statusMessage(room, team, slug string) *hipchat.NotificationRequest {
-	meetspaceURL := fmt.Sprintf("https://meetspaceapp.com/%s/%s", team, slug)
+func statusMessage(team, slug string) *hipchat.NotificationRequest {
+	meetspaceURL := fmt.Sprintf("https://meetspaceapp.com/%s/%s", team, strings.ToLower(slug))
 
 	// This is here as reminder that I need to get sending Cards working
 	msgCard := &hipchat.Card{
@@ -120,7 +112,7 @@ func statusMessage(room, team, slug string) *hipchat.NotificationRequest {
 }
 
 // helpMessage is called when any other command is given
-func helpMessage(room string) *hipchat.NotificationRequest {
+func helpMessage() *hipchat.NotificationRequest {
 	msgBody := fmt.Sprintf("<p><strong>Usage:</strong><br><code>/meetspace core # start core team call</code><br><code>/meetspace dev  # start dev team call</code></p>")
 
 	return &hipchat.NotificationRequest{From: "Meetspace Bot", Message: msgBody, Color: "gray"}
