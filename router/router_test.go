@@ -18,7 +18,7 @@ func init() {
 	os.Setenv("MEETSPACE_API_HOST", "http://docker:8080")
 }
 
-// TestHipchatHandler tests the Hipchat request route
+// TestHipchatHandler tests the Hipchat command route
 func TestHipchatHandler(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(HipchatHandler))
 	defer ts.Close()
