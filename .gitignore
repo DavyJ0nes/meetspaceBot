@@ -1,4 +1,4 @@
 .ms-mock/*
 .env
-.releases/meet*
+releases*
 *cover.out*

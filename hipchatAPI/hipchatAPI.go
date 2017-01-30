@@ -92,7 +92,7 @@ func HipchatNotification(roomName, reqRoom, teamName, test string) (string, erro
 
 // statusMessage is called when router sees /meetspace status
 func statusMessage(team, slug string) *hipchat.NotificationRequest {
-	meetspaceURL := fmt.Sprintf("https://meetspaceapp.com/%s/%s", team, strings.ToLower(slug))
+	meetspaceURL := fmt.Sprintf("https://meetspaceapp.com/%s/%s", strings.ToLower(team), strings.ToLower(slug))
 
 	// This is here as reminder that I need to get sending Cards working
 	msgCard := &hipchat.Card{
