@@ -11,7 +11,7 @@ import (
 var msa MeetspaceAPI
 
 func TestMSMock(t *testing.T) {
-	mockData := []byte(`{"id":"1001","name":"Testy","url":"https://meetspaceapp.com/testy","rooms":[{"id":"aabb1234","name":"calltime","url":"https://meetspaceapp.com/testy/calltime","public":"\u003ctrue","participants":[{"id":"aabb1234bbaa4321","name":"jamesbond","email":"doubleoh@mod.gov","avatar-url":"https://pbs.twimg.com/profile_images/522485330771845120/gK0H2djd_400x400.jpeg"}]}]}`)
+	mockData := []byte(`{"name":"Testy","url":"https://meetspaceapp.com/test","rooms":[{"name":"calltime","url":"https://meetspaceapp.com/test/calltime","public":false,"participants":[]},{"name":"Other Room","url":"https://meetspaceapp.com/test/other","public":true,"participants":[{"name":"James Bond","email":"bond@doubleoh.com","avatar-url":"http://vignette2.wikia.nocookie.net/jamesbond/images/d/de/James_Bond_(Roger_Moore)_-_Profile.jpg"}]}]}`)
 
 	err := json.Unmarshal(mockData, &msa.Data)
 	if err != nil {
