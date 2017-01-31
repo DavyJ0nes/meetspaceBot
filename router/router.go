@@ -17,12 +17,11 @@ func requestLogger(req *http.Request) {
 }
 
 // Router is main mux wrangler. Keeps main() clean
-func Router() http.Handler {
+func Router() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v0/hipchat", HipchatHandler)
 	// mux.HandleFunc("/api/v0/slack", SlackHandler)
 	log.Fatal(http.ListenAndServe(":8081", mux))
-	return mux
 }
 
 // HipchatHandler is the main function for dealing with Hipchat Requests

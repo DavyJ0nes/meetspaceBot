@@ -14,7 +14,6 @@ var dummyPostBodyCore = []byte(`{"event": "room_message", "item": {"message": {"
 // init is being used here to set required env's before test execution
 func init() {
 	os.Setenv("MEETSPACEBOT_TEST", "true")
-	os.Setenv("MEETSPACEBOT_TEAM", "funtimes")
 }
 
 // TestParsedHipchatReq checks that the request can be wrangled into the struct
@@ -33,7 +32,7 @@ func TestParsedHipchatReq(t *testing.T) {
 func TestCoreRoomMessage(t *testing.T) {
 	expected := `Click here to join call <a href="https://meetspaceapp.com/funtimes/core">Funtimes Core Team</a>`
 
-	got, err := HipchatNotification("core", "test", "funtimes", os.Getenv("MEETSPACEBOT_TEST"))
+	got, err := HipchatNotification("core", "test", "Funtimes", os.Getenv("MEETSPACEBOT_TEST"))
 	if err != nil {
 		t.Errorf("HipchatNotification() Error: %s", err)
 	}
@@ -47,7 +46,7 @@ func TestCoreRoomMessage(t *testing.T) {
 func TestHelpMessage(t *testing.T) {
 	expected := "<p><strong>Usage:</strong><br><code>/meetspace core # start core team call</code><br><code>/meetspace dev  # start dev team call</code></p>"
 
-	got, err := HipchatNotification("", "test", "funtimes", os.Getenv("MEETSPACEBOT_TEST"))
+	got, err := HipchatNotification("", "test", "Funtimes", os.Getenv("MEETSPACEBOT_TEST"))
 	if err != nil {
 		t.Errorf("HipchatNotification() Error: %s", err)
 	}
