@@ -11,7 +11,7 @@ import (
 var msa ms_mock.MeetspaceAPI
 
 func main() {
-	mockData := []byte(`{"id":"1001","name":"Forge","url":"https://meetspaceapp.com/forge","rooms":[{"id":"aabb1234","name":"core","url":"https://meetspaceapp.com/forge/core","public":"\u003ctrue","participants":[{"id":"aabb1234bbaa4321","name":"jamesbond","email":"doubleoh@mod.gov","avatar-url":"https://pbs.twimg.com/profile_images/522485330771845120/gK0H2djd_400x400.jpeg"},{"id":"aabb5678bbaa4321","name":"miss moneypenny","email":"moneypenny@mi6.com","avatar-url":"https://pbs.twimg.com/profile_images/522485330771845120/gK0H2djd_400x400.jpeg"}]},{"id":"aabb1234","name":"dev","url":"https://meetspaceapp.com/forge/dev","public":"\u003ctrue","participants":[{"id":"aabb1234bbaa4321","name":"jamesbond","email":"doubleoh@mod.gov","avatar-url":"https://pbs.twimg.com/profile_images/522485330771845120/gK0H2djd_400x400.jpeg"},{"id":"aabb5678bbaa4321","name":"miss moneypenny","email":"moneypenny@mi6.com","avatar-url":"https://pbs.twimg.com/profile_images/522485330771845120/gK0H2djd_400x400.jpeg"},{"id":"aabb5678bbaa4321","name":"Q","email":"q@mi6.com","avatar-url":"https://pbs.twimg.com/profile_images/522485330771845120/gK0H2djd_400x400.jpeg"}]}]}`)
+	mockData := []byte(`{"name":"Forge SP","url":"https://meetspaceapp.com/forge","rooms":[{"name":"Forge Core Team","url":"https://meetspaceapp.com/forge/core","public":false,"participants":[]},{"name":"Exposure Dev Team","url":"https://meetspaceapp.com/forge/dev","public":true,"participants":[]},{"name":"Robs Room","url":"https://meetspaceapp.com/forge/robsroom","public":true,"participants":[]},{"name":"Davy Open Room","url":"https://meetspaceapp.com/forge/davy","public":true,"participants":[]}]}`)
 
 	er := json.Unmarshal(mockData, &msa.Data)
 	if er != nil {

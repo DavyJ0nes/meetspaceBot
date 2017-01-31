@@ -4,28 +4,26 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 )
 
 // MeetspaceData defines API response from meetspace
 type MeetspaceData struct {
-	Id    string `json:"id"`
 	Name  string `json:"name"`
 	Url   string `json:"url"`
 	Rooms []room `json:"rooms"`
 }
 
 type room struct {
-	Id           string        `json:"id"`
 	Name         string        `json:"name"`
 	Url          string        `json:"url"`
-	Public       string        `json:"public"`
+	Public       bool          `json:"public"`
 	Participants []participant `json:"participants"`
 }
 
 type participant struct {
-	Id        string `json:"id"`
 	Name      string `json:"name"`
 	Email     string `json:"email"`
 	Avatarurl string `json:"avatar-url"`
@@ -50,6 +48,7 @@ func MeetspaceCall(url string, endpoint string) ([]byte, error) {
 		return nil, err
 	}
 
+	log.Printf("<< MeetSpace || %s | %s | %s ||", req.Method, req.URL.Path, res.Status)
 	if res.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("Server Replied with: %s", res.Status)
 	}

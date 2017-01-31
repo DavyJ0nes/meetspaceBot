@@ -13,7 +13,7 @@ import (
 
 // requestLogger logs request information in standard way
 func requestLogger(req *http.Request) {
-	log.Printf("%s | %s || %s => %s || %s", req.Method, req.URL.Path, req.RemoteAddr, req.Host, req.Header.Get("User-Agent"))
+	log.Printf(">> %s | %s || %s => %s || %s", req.Method, req.URL.Path, req.RemoteAddr, req.Host, req.Header.Get("User-Agent"))
 }
 
 // Router is main mux wrangler. Keeps main() clean
@@ -43,16 +43,20 @@ func HipchatHandler(w http.ResponseWriter, req *http.Request) {
 	var (
 		callRoomName string
 	)
+
 	for _, room := range meetspaceData.Rooms {
-		if wantedCall[len(wantedCall)-1] == room.Name {
+		if len(wantedCall) < 1 {
+			callRoomName = ""
+			break
+		}
+		if strings.Contains(room.Url, wantedCall[len(wantedCall)-1]) {
 			callRoomName = wantedCall[len(wantedCall)-1]
 			break
 		} else {
 			callRoomName = ""
 		}
 	}
-
-	_, hcnErr := hipchatAPI.HipchatNotification(callRoomName, reqRoomName, meetspaceData.Name, os.Getenv("MEETSPACEBOT_TEST"))
+	_, hcnErr := hipchatAPI.HipchatNotification(callRoomName, reqRoomName, meetspaceData.Url, meetspaceData.Name, os.Getenv("MEETSPACEBOT_TEST"))
 	if hcnErr != nil {
 		log.Fatal("Hipchat | Error Sending Request: ", hcnErr)
 	}
