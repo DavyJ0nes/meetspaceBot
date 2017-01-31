@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-var dummyData []byte = []byte(`{"id":"1001","name":"Testy","url":"https://meetspaceapp.com/testy","rooms":[{"id":"aabb1234","name":"calltime","url":"https://meetspaceapp.com/testy/calltime","public":"\u003ctrue","participants":[{"id":"aabb1234bbaa4321","name":"jamesbond","email":"doubleoh@mod.gov","avatar-url":"https://pbs.twimg.com/profile_images/522485330771845120/gK0H2djd_400x400.jpeg"}]}]}`)
+var dummyData []byte = []byte(`{"name":"Testy","url":"https://meetspaceapp.com/test","rooms":[{"name":"calltime","url":"https://meetspaceapp.com/test/calltime","public":false,"participants":[]},{"name":"Other Room","url":"https://meetspaceapp.com/test/other","public":true,"participants":[{"name":"James Bond","email":"bond@doubleoh.com","avatar-url":"http://vignette2.wikia.nocookie.net/jamesbond/images/d/de/James_Bond_(Roger_Moore)_-_Profile.jpg"}]}]}`)
 
 // init is being used here to set required env's before test execution
 func init() {
@@ -88,7 +88,7 @@ func TestMeetspaceFormat(t *testing.T) {
 	if wrangledData.Rooms[0].Name != "calltime" {
 		t.Errorf("Expected: '%s' | Got: '%s'", "calltime", wrangledData.Rooms[0].Name)
 	}
-	if wrangledData.Rooms[0].Participants[0].Name != "jamesbond" {
-		t.Errorf("Expected: '%s' | Got: '%s'", "jamesbond", wrangledData.Rooms[0].Participants[0].Name)
+	if wrangledData.Rooms[1].Participants[0].Name != "James Bond" {
+		t.Errorf("Expected: '%s' | Got: '%s'", "James Bond", wrangledData.Rooms[1].Participants[0].Name)
 	}
 }

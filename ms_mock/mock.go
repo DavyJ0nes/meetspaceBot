@@ -6,21 +6,18 @@ import (
 )
 
 type room struct {
-	Id           string        `json:"id"`
 	Name         string        `json:"name"`
 	Url          string        `json:"url"`
-	Public       string        `json:"public"`
+	Public       bool          `json:"public"`
 	Participants []participant `json:"participants"`
 }
 
 type participant struct {
-	Id        string `json:"id"`
 	Name      string `json:"name"`
 	Email     string `json:"email"`
 	Avatarurl string `json:"avatar-url"`
 }
 type meetspaceData struct {
-	Id    string `json:"id"`
 	Name  string `json:"name"`
 	Url   string `json:"url"`
 	Rooms []room `json:"rooms"`

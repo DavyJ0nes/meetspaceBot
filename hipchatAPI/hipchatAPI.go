@@ -55,12 +55,12 @@ func ParseHipchatReq(data []byte) (HipchatPostData, error) {
 
 // HipchatNotification sends Room Notification Message
 // The notification is chosen based on user input
-func HipchatNotification(roomName, reqRoom, teamName, test string) (string, error) {
+func HipchatNotification(roomName, reqRoom, teamUrl, teamName, test string) (string, error) {
 	var notifReq *hipchat.NotificationRequest
 	c := hipchat.NewClient(os.Getenv("HIPCHAT_API_TOKEN"))
 
 	if roomName != "" {
-		notifReq = statusMessage(teamName, roomName)
+		notifReq = statusMessage(teamUrl, teamName, roomName)
 	} else {
 		notifReq = helpMessage()
 	}
@@ -91,8 +91,8 @@ func HipchatNotification(roomName, reqRoom, teamName, test string) (string, erro
 }
 
 // statusMessage is called when router sees /meetspace status
-func statusMessage(team, slug string) *hipchat.NotificationRequest {
-	meetspaceURL := fmt.Sprintf("https://meetspaceapp.com/%s/%s", team, strings.ToLower(slug))
+func statusMessage(url, team, slug string) *hipchat.NotificationRequest {
+	meetspaceURL := fmt.Sprintf("%s/%s", strings.ToLower(url), strings.ToLower(slug))
 
 	// This is here as reminder that I need to get sending Cards working
 	msgCard := &hipchat.Card{
@@ -104,7 +104,7 @@ func statusMessage(team, slug string) *hipchat.NotificationRequest {
 			Value:  "value",
 		},
 	}
-	msgBody := fmt.Sprintf(`%s <a href="%s">%s %s Team</a>`, msgCard.Title, msgCard.URL, strings.Title(team), strings.Title(slug))
+	msgBody := fmt.Sprintf(`%s <a href="%s">%s %s</a>`, msgCard.Title, msgCard.URL, strings.Title(team), strings.Title(slug))
 	return &hipchat.NotificationRequest{From: "Meetspace Bot", Message: msgBody, Color: "purple"}
 
 	// Need to fix request for sending Card to work. More work needed
