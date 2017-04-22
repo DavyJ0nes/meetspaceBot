@@ -5,10 +5,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/davyj0nes/meetspaceBot/ms_mock"
+	"github.com/davyj0nes/meetspaceBot/msmock"
 )
 
-var msa ms_mock.MeetspaceAPI
+var msa msmock.MeetspaceAPI
 
 func main() {
 	mockData := []byte(`{"name":"Forge SP","url":"https://meetspaceapp.com/forge","rooms":[{"name":"Forge Core Team","url":"https://meetspaceapp.com/forge/core","public":false,"participants":[]},{"name":"Exposure Dev Team","url":"https://meetspaceapp.com/forge/dev","public":true,"participants":[]},{"name":"Robs Room","url":"https://meetspaceapp.com/forge/robsroom","public":true,"participants":[]},{"name":"Davy Open Room","url":"https://meetspaceapp.com/forge/davy","public":true,"participants":[]}]}`)

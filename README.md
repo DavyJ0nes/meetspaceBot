@@ -1,3 +1,4 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/DavyJ0nes/meetspaceBot)](https://goreportcard.com/report/github.com/DavyJ0nes/meetspaceBot)
 ```
                         __                             ____        __ 
    ____ ___  ___  ___  / /__________  ____ _________  / __ )____  / /_

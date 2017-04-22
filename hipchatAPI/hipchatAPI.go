@@ -2,12 +2,12 @@ package hipchatAPI
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"strings"
 
+	"github.com/davyj0nes/meetspaceBot/meetspaceAPI"
 	"github.com/tbruyelle/hipchat-go/hipchat"
 )
 
@@ -35,7 +35,8 @@ type from struct {
 	Name        string `json:"name"`
 }
 
-type HipChatAPIError struct {
+// Error describes the error message that is returned
+type Error struct {
 	Error struct {
 		Code    int    `json:"code"`
 		Message string `json:"message"`
@@ -43,7 +44,7 @@ type HipChatAPIError struct {
 	} `json:"error"`
 }
 
-// ParsedHipchatReq simply parses the POST Req JSON into something useful
+// ParseHipchatReq simply parses the POST Req JSON into something useful
 func ParseHipchatReq(data []byte) (HipchatPostData, error) {
 	var parsedReq HipchatPostData
 	err := json.Unmarshal(data, &parsedReq)
@@ -55,12 +56,14 @@ func ParseHipchatReq(data []byte) (HipchatPostData, error) {
 
 // HipchatNotification sends Room Notification Message
 // The notification is chosen based on user input
-func HipchatNotification(roomName, reqRoom, teamUrl, teamName, test string) (string, error) {
+func HipchatNotification(roomName, reqRoom, test string, msResponse meetspaceAPI.MeetspaceData) (string, error) {
 	var notifReq *hipchat.NotificationRequest
 	c := hipchat.NewClient(os.Getenv("HIPCHAT_API_TOKEN"))
 
-	if roomName != "" {
-		notifReq = statusMessage(teamUrl, teamName, roomName)
+	if roomName == "status" {
+		notifReq = statusMessage(msResponse, roomName)
+	} else if roomName != "" {
+		notifReq = roomMessage(msResponse.URL, msResponse.Name, roomName)
 	} else {
 		notifReq = helpMessage()
 	}
@@ -77,10 +80,10 @@ func HipchatNotification(roomName, reqRoom, teamUrl, teamName, test string) (str
 	// This is messy but error was returning with other implementations
 	if res.StatusCode != 200 {
 		if res.StatusCode != 204 {
-			resMessage := HipChatAPIError{}
+			resMessage := Error{}
 			resBody, _ := ioutil.ReadAll(res.Body)
 			json.Unmarshal(resBody, &resMessage)
-			return "", errors.New(fmt.Sprintf(" %v - \n%s\n\n%s", res.StatusCode, resMessage.Error.Message, resMessage.Error.Type))
+			return "", fmt.Errorf(" %v - \n%s\n\n%s", res.StatusCode, resMessage.Error.Message, resMessage.Error.Type)
 		}
 	}
 	if err != nil {
@@ -91,8 +94,29 @@ func HipchatNotification(roomName, reqRoom, teamUrl, teamName, test string) (str
 }
 
 // statusMessage is called when router sees /meetspace status
-func statusMessage(url, team, slug string) *hipchat.NotificationRequest {
-	meetspaceURL := fmt.Sprintf("%s/%s", strings.ToLower(url), strings.ToLower(slug))
+func statusMessage(msRes meetspaceAPI.MeetspaceData, slug string) *hipchat.NotificationRequest {
+	meetspaceURL := fmt.Sprintf("%s/%s", strings.ToLower(msRes.URL), strings.ToLower(slug))
+
+	// This is here as reminder that I need to get sending Cards working
+	msgCard := &hipchat.Card{
+		Style: "link",
+		URL:   meetspaceURL,
+		Title: "<p><strong>Meetspace Status</strong><br>",
+		Description: hipchat.CardDescription{
+			Format: "format",
+			Value:  "value",
+		},
+	}
+	msgBody := fmt.Sprintf(`%s <a href="%s"> %s</a>`, msgCard.Title, msgCard.URL, strings.Title(slug))
+	return &hipchat.NotificationRequest{From: "Meetspace Bot", Message: msgBody, Color: "purple"}
+
+	// Need to fix request for sending Card to work. More work needed
+	// return &hipchat.NotificationRequest{Message: msgBody, Card: msgCard}
+}
+
+// roomMessage is called when router sees /meetspace <room name>
+func roomMessage(url, team, slug string) *hipchat.NotificationRequest {
+	meetspaceURL := fmt.Sprintf("%s/%s", strings.ToLower(url), strings.ToLower(team))
 
 	// This is here as reminder that I need to get sending Cards working
 	msgCard := &hipchat.Card{
@@ -104,7 +128,7 @@ func statusMessage(url, team, slug string) *hipchat.NotificationRequest {
 			Value:  "value",
 		},
 	}
-	msgBody := fmt.Sprintf(`%s <a href="%s">%s %s</a>`, msgCard.Title, msgCard.URL, strings.Title(team), strings.Title(slug))
+	msgBody := fmt.Sprintf(`%s <a href="%s/%s">%s %s</a>`, msgCard.Title, msgCard.URL, strings.ToLower(slug), strings.Title(team), strings.Title(slug))
 	return &hipchat.NotificationRequest{From: "Meetspace Bot", Message: msgBody, Color: "purple"}
 
 	// Need to fix request for sending Card to work. More work needed

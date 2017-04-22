@@ -1,4 +1,4 @@
-package ms_mock
+package msmock
 
 import (
 	"encoding/json"
@@ -7,7 +7,7 @@ import (
 
 type room struct {
 	Name         string        `json:"name"`
-	Url          string        `json:"url"`
+	URL          string        `json:"url"`
 	Public       bool          `json:"public"`
 	Participants []participant `json:"participants"`
 }
@@ -19,10 +19,11 @@ type participant struct {
 }
 type meetspaceData struct {
 	Name  string `json:"name"`
-	Url   string `json:"url"`
+	URL   string `json:"url"`
 	Rooms []room `json:"rooms"`
 }
 
+// MeetspaceAPI is a mocked represenentation of the intended API schema
 type MeetspaceAPI struct {
 	Data meetspaceData
 }

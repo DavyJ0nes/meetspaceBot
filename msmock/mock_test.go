@@ -1,4 +1,4 @@
-package ms_mock
+package msmock
 
 import (
 	"encoding/json"

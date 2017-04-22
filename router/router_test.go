@@ -15,7 +15,7 @@ var hcTestData = strings.NewReader(`{"event": "room_message", "item": {"message"
 // init is being used here to set required env's before test execution
 func init() {
 	os.Setenv("MEETSPACEBOT_TEST", "true")
-	os.Setenv("MEETSPACE_API_HOST", "http://docker:8080")
+	os.Setenv("MEETSPACE_API_HOST", "http://localhost:8080")
 }
 
 // TestHipchatHandler tests the Hipchat command route

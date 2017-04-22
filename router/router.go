@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/davyj0nes/meetspacebot/hipchatAPI"
-	"github.com/davyj0nes/meetspacebot/meetspaceAPI"
+	"github.com/davyj0nes/meetspaceBot/hipchatAPI"
+	"github.com/davyj0nes/meetspaceBot/meetspaceAPI"
 )
 
 // requestLogger logs request information in standard way
@@ -32,6 +32,7 @@ func HipchatHandler(w http.ResponseWriter, req *http.Request) {
 		log.Fatal("Hipchat | Error parsing Body of Request: ", hcrErr)
 	}
 
+	var callRoomName string
 	reqRoomName := hipchatReq.Item.Room.Name
 	reqMessage := hipchatReq.Item.Message.Message
 	wantedCall := strings.Split(reqMessage, " ")
@@ -40,27 +41,23 @@ func HipchatHandler(w http.ResponseWriter, req *http.Request) {
 		log.Fatal("Meetspace | Error calling API", msdErr)
 	}
 
-	var (
-		callRoomName string
-	)
-
 	for _, room := range meetspaceData.Rooms {
 		if len(wantedCall) < 1 {
 			callRoomName = ""
 			break
 		}
-		if strings.Contains(room.Url, wantedCall[len(wantedCall)-1]) {
+		if strings.Contains(room.URL, wantedCall[len(wantedCall)-1]) {
 			callRoomName = wantedCall[len(wantedCall)-1]
 			break
 		} else {
 			callRoomName = ""
 		}
 	}
-	_, hcnErr := hipchatAPI.HipchatNotification(callRoomName, reqRoomName, meetspaceData.Url, meetspaceData.Name, os.Getenv("MEETSPACEBOT_TEST"))
+	w.Header().Set("Content-Type", "application/json")
+	_, hcnErr := hipchatAPI.HipchatNotification(callRoomName, reqRoomName, os.Getenv("MEETSPACEBOT_TEST"), meetspaceData)
 	if hcnErr != nil {
 		log.Fatal("Hipchat | Error Sending Request: ", hcnErr)
 	}
-	w.Header().Set("Content-Type", "application/json")
 }
 
 // hipchatReq returns formatted Data from Hipchat POST request
@@ -80,9 +77,9 @@ func hipchatReq(req *http.Request) (hipchatAPI.HipchatPostData, error) {
 
 // MeetspaceData calls the meetspace API and returns formatted Data
 func MeetspaceData() (meetspaceAPI.MeetspaceData, error) {
-	apiUrl := os.Getenv("MEETSPACE_API_HOST")
+	apiURL := os.Getenv("MEETSPACE_API_HOST")
 	apiEndpoint := "status"
-	apiReq, err := meetspaceAPI.MeetspaceCall(apiUrl, apiEndpoint)
+	apiReq, err := meetspaceAPI.MeetspaceCall(apiURL, apiEndpoint)
 	if err != nil {
 		return meetspaceAPI.MeetspaceData{}, err
 	}

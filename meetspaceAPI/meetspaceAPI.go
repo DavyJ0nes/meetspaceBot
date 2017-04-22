@@ -12,13 +12,14 @@ import (
 // MeetspaceData defines API response from meetspace
 type MeetspaceData struct {
 	Name  string `json:"name"`
-	Url   string `json:"url"`
-	Rooms []room `json:"rooms"`
+	URL   string `json:"url"`
+	Rooms []Room `json:"rooms"`
 }
 
-type room struct {
+// Room defines room info from meetspace
+type Room struct {
 	Name         string        `json:"name"`
-	Url          string        `json:"url"`
+	URL          string        `json:"url"`
 	Public       bool          `json:"public"`
 	Participants []participant `json:"participants"`
 }
@@ -34,8 +35,8 @@ type participant struct {
 //  major version releases
 func MeetspaceCall(url string, endpoint string) ([]byte, error) {
 	client := &http.Client{}
-	reqUrl := url + "/i/api/v0/" + endpoint
-	req, err := http.NewRequest("GET", reqUrl, nil)
+	reqURL := url + "/i/api/v0/" + endpoint
+	req, err := http.NewRequest("GET", reqURL, nil)
 	if err != nil {
 		return nil, err
 	}

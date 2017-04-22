@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-var dummyData []byte = []byte(`{"name":"Testy","url":"https://meetspaceapp.com/test","rooms":[{"name":"calltime","url":"https://meetspaceapp.com/test/calltime","public":false,"participants":[]},{"name":"Other Room","url":"https://meetspaceapp.com/test/other","public":true,"participants":[{"name":"James Bond","email":"bond@doubleoh.com","avatar-url":"http://vignette2.wikia.nocookie.net/jamesbond/images/d/de/James_Bond_(Roger_Moore)_-_Profile.jpg"}]}]}`)
+var dummyData = []byte(`{"name":"Testy","url":"https://meetspaceapp.com/test","rooms":[{"name":"calltime","url":"https://meetspaceapp.com/test/calltime","public":false,"participants":[]},{"name":"Other Room","url":"https://meetspaceapp.com/test/other","public":true,"participants":[{"name":"James Bond","email":"bond@doubleoh.com","avatar-url":"http://vignette2.wikia.nocookie.net/jamesbond/images/d/de/James_Bond_(Roger_Moore)_-_Profile.jpg"}]}]}`)
 
 // init is being used here to set required env's before test execution
 func init() {
@@ -42,8 +42,8 @@ func TestMeetspaceRequest(t *testing.T) {
 	ts := httptest.NewServer(mockHandler)
 	defer ts.Close()
 
-	reqUrl := ts.URL
-	_, err := MeetspaceCall(reqUrl, "status")
+	reqURL := ts.URL
+	_, err := MeetspaceCall(reqURL, "status")
 	if err != nil {
 		t.Errorf("MeetspaceCall() returned error: %s", err)
 	}
@@ -56,8 +56,8 @@ func TestMeetspaceResponse(t *testing.T) {
 	ts := httptest.NewServer(mockHandler)
 	defer ts.Close()
 
-	reqUrl := ts.URL
-	resData, err := MeetspaceCall(reqUrl, "status")
+	reqURL := ts.URL
+	resData, err := MeetspaceCall(reqURL, "status")
 	if err != nil {
 		t.Errorf("MeetspaceCall() returned error: %s", err)
 	}
@@ -72,8 +72,8 @@ func TestMeetspaceFormat(t *testing.T) {
 	ts := httptest.NewServer(mockHandler)
 	defer ts.Close()
 
-	reqUrl := ts.URL
-	resData, err := MeetspaceCall(reqUrl, "status")
+	reqURL := ts.URL
+	resData, err := MeetspaceCall(reqURL, "status")
 	if err != nil {
 		t.Errorf("MeetspaceCall() returned error: %s", err)
 	}

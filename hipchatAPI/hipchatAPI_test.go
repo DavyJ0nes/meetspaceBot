@@ -3,6 +3,8 @@ package hipchatAPI
 import (
 	"os"
 	"testing"
+
+	"github.com/davyj0nes/meetspaceBot/meetspaceAPI"
 )
 
 // Dummy POST request for user input "/meetspace"
@@ -31,8 +33,10 @@ func TestParsedHipchatReq(t *testing.T) {
 // TestCoreTeamMessage checks hipchat.NotificationRequest.Message is correct
 func TestCoreRoomMessage(t *testing.T) {
 	expected := `Click here to join call <a href="https://meetspaceapp.com/funtimes/core">Funtimes Core</a>`
+	testData := meetspaceAPI.MeetspaceData{"Funtimes", "https://meetspaceapp.com", []meetspaceAPI.Room{}}
 
-	got, err := HipchatNotification("core", "test", "https://meetspaceapp.com/funtimes", "Funtimes", os.Getenv("MEETSPACEBOT_TEST"))
+	// THIS IS FAILING NEED TO LOOK AT
+	got, err := HipchatNotification("core", "test", os.Getenv("MEETSPACEBOT_TEST"), testData)
 	if err != nil {
 		t.Errorf("HipchatNotification() Error: %s", err)
 	}
@@ -46,7 +50,8 @@ func TestCoreRoomMessage(t *testing.T) {
 func TestHelpMessage(t *testing.T) {
 	expected := "<p><strong>Usage:</strong><br><code>/meetspace core # start core team call</code><br><code>/meetspace dev  # start dev team call</code></p>"
 
-	got, err := HipchatNotification("", "test", "https://meetspaceapp.com/funtimes", "Funtimes", os.Getenv("MEETSPACEBOT_TEST"))
+	testData := meetspaceAPI.MeetspaceData{"", "https://meetspaceapp.com/", []meetspaceAPI.Room{}}
+	got, err := HipchatNotification("", "test", os.Getenv("MEETSPACEBOT_TEST"), testData)
 	if err != nil {
 		t.Errorf("HipchatNotification() Error: %s", err)
 	}
